@@ -1,0 +1,375 @@
+﻿@using SmartHouseMVC.Models.Interfaces
+@using SmartHouseMVC.Models.ImplementedInterfaces
+@model IDictionary<int, Applience>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int key=0;
+    }
+
+@using (@Html.BeginForm("Add", "Applience"))
+{
+    @Html.DropDownList("app", (IEnumerable<SelectListItem>)ViewBag.AppList)
+    <input type="submit" value="Добавить" class="btn btn-default">
+}
+@foreach (var item in Model)
+{
+    <div class="app-div" id="div @(item.Key-1)">
+        <span class="labelstyle"> @item.Value.Name  </span>
+        <br />
+        @if (item.Value is ISwitchable)
+        {
+            using (@Html.BeginForm("Switch" + '/' + item.Key, "Applience"))
+            {
+                switch (item.Value.Name)
+                {
+                    case "Lamp":
+                        {
+
+                            <input type="image" name="action" value="OnOff" class="img-thumbnail" src="~/Images/15-Light-Bulb-icon1.png" />
+                            break;
+                        }
+                    case "Conditioner":
+                        {
+                            <input type="image" name="action" value="OnOff" id="conButton" class="img-thumbnail" src="~/Images/112132-2001.png" />
+                            break;
+                        }
+                    case "Microwave":
+                        {
+                            <input type="image" name="action" value="OnOff" id="MicroButton" class="img-thumbnail" src="~/Images/microwave-icon-201.png" />
+                            break;
+                        }
+                    case "TV":
+                        {
+                            <input type="image" name="action" id="@(item.Key-1)" value="OnOff" class="img-thumbnail onoff" src="~/Images/retro-tv-icon-615261.png" />
+                            break;
+                        }
+                }
+                <br />
+            }
+        }
+        @if (item.Value is IChangeable)
+        {
+
+            using (@Html.BeginForm("Change" + '/' + item.Key, "Applience"))
+            {
+
+                <br />
+                <button type="submit" name="action" id="@(item.Key-1)" value="Down" class="btn btn-warning down">-</button>
+                <button type="submit" name="action" value="Up" id="@(item.Key-1)" class="btn btn-success up">+</button>
+                <br />
+            }
+        }
+        @if (item.Value is ITemperatureable)
+        {
+            using (@Html.BeginForm("Temperature" + '/' + item.Key, "Applience", FormMethod.Post, new { id = "myForm" }))
+            {
+                <span id="spanOnOffcon" hidden="hidden">@item.Value.State</span>
+                <br />
+                <input type="text" name="temperatureTB" id="temperatureTB" />
+                <input type="button" id="setButton" value="Set" class="btn btn-primary" />
+                <br />
+            }
+            <span id="spanState">
+                @if (TempData["conditioner"] != null)
+                {
+                    @TempData["conditioner"];
+                }
+            </span>
+
+        }
+        @if (item.Value is ICook)
+        {
+
+            using (@Html.BeginForm("Cook" + '/' + item.Key, "Applience", FormMethod.Post, new { id = "myForm2" }))
+            {
+
+                <span id="spanOnOff" hidden="hidden">@item.Value.State</span>
+                <br />
+                <br />
+                <input type="text" name="microTB" id="microTB" />
+                <label> <input type="checkbox" name="action" value="Food" id="checkbox" />Food </label>
+                <button type="button" value="Reheat" id="reheatButton" class="btn btn-info">Reheat</button>
+                <br />
+
+
+            }
+        }
+        @if (item.Value is IChannel)
+        {
+
+           
+            <br />
+            <br />
+            key = @item.Key-1;
+           
+            <button type="submit" name="action" value="show" class="btn btn-primary myshow" id="@key">Show</button>
+           <div id="showdiv-@key"></div>
+            <br />
+            <input type="text" name="channelTV" id="textBoxAdd-@key" />
+            <button type="submit" name="action" value="AddChannel" class="btn btn-primary addchannel" id="@key">Add Channel</button>
+            <br />
+            <button type="submit" name="action" value="DeleteChannel" class="btn btn-warning deletech" id="@key">Delete current channel</button>
+            <br />
+    <button type="submit" name="action" value="Prev" class="btn btn-info myprev" id="@key"><-</button>
+            <button type="submit" name="action" value="Next" class="btn btn-primary next" id="@key">-></button>
+            <br />
+            <br />
+    <div class="labelStatus" id="label-@key"></div>
+            <br />
+            
+        }
+        <br />
+         @if(!(item.Value is IChannel))
+         { 
+        <span class="labelStatus">@item.Value.ToString()</span>
+         }
+        <br />
+        @using (@Html.BeginForm("Delete/" + item.Key, "Applience"))
+        {
+            <button type="submit" class="btn btn-danger deletediv" id="@(item.Key-1)">Delete</button>
+        }
+
+    </div>
+
+}
+<script src="~/Scripts/CountDownFunctions.js"></script>
+<script>
+
+    
+
+    var model  = @Html.Raw(Json.Encode(Model.Values));
+   
+  
+    $(document).ready(function () {
+             $.ajax(
+                {
+                    url: '/api/channel/init',
+                    type: 'GET',
+                    contentType: 'application/json',
+                    success: function(result) {
+                        for(var i=0;i<result.length;i++)
+                        {
+                            var str="#label-"+result[i+1];
+                            $(str).html(result[i]);
+                        }
+                    }
+                }
+                );
+    });
+    $("div.app-div").on("click",".onoff", function(e)
+    {
+        var id=$(this).attr("id");
+        e.preventDefault();
+        var tv=model[id];
+        var mydata=[];
+        mydata[0]=tv;
+        mydata[1]=id;
+       
+        $.ajax(
+            {
+                url: '/api/channel/OnOff',
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(mydata),
+                success: function(result) {
+                    tv["State"]=result[0];
+
+                    var str="#label-"+id;
+                    $(str).html(result[1]);
+                }
+            }
+            );
+    }
+    );
+
+    $("div.app-div").on("click","button.next", function(e)
+    {
+        var id=$(this).attr("id");
+        e.preventDefault();
+        var tv=model[id];
+        var mydata=[];
+        mydata[0]=tv;
+        mydata[1]=id;
+        $.ajax(
+                {
+                    url: '/api/channel/next',
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(mydata),
+                    success: function(result) {
+                        tv["currentChannel"]=result[0];
+
+                        var str="#label-"+id;
+                        $(str).html(result[1]);
+                    }
+                }
+                );
+       
+    }
+       );
+
+
+    $("div.app-div").on("click","button.myprev", function(e)
+    {
+        var id=$(this).attr("id");
+        e.preventDefault();
+        var tv=model[id];
+        var mydata=[];
+        mydata[0]=tv;
+        mydata[1]=id;
+        $.ajax(
+             {
+                 url: '/api/channel/prev',
+                 type: 'PUT',
+                 contentType: 'application/json',
+                 data: JSON.stringify(mydata),
+                 success: function(result) {
+                     tv["currentChannel"]=result[0];
+                     var str="#label-"+id;
+                     $(str).html(result[1]);
+                 }
+             }
+             );
+    }
+       );
+    
+    $("div.app-div").on("click","button.down", function(e)
+    {
+        var id=$(this).attr("id");
+        e.preventDefault();
+        var tv=model[id];
+        var mydata=[];
+        mydata[0]=tv;
+        mydata[1]=id;
+        $.ajax(
+            {
+                url: '/api/channel/down',
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(mydata),
+                success: function(result) {
+                    tv["Unit"]=result[0];
+                    var str="#label-"+id;
+                    $(str).html(result[1]);
+                }
+            }
+            );
+    }
+      );
+   
+    $("div.app-div").on("click","button.up", function(e)
+    {
+        var id=$(this).attr("id");
+        e.preventDefault();
+        var tv=model[id];
+        var mydata=[];
+        mydata[0]=tv;
+        mydata[1]=id;
+        $.ajax(
+            {
+                url: '/api/channel/up',
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(mydata),
+                success: function(result) {
+                    tv["Unit"]=result[0];
+                    var str="#label-"+id;
+                    $(str).html(result[1]);
+                }
+            }
+            );
+    }
+    );
+    $("div.app-div").on("click","button.addchannel", function(e)
+    {
+        var id=$(this).attr("id");
+        e.preventDefault();
+        var channel=$("#textBoxAdd-"+id).val();
+        var tv=model[id];
+        var mydata=[];
+        mydata[0]=tv;
+        mydata[1]=id;
+        mydata[2]=channel;
+        $.ajax(
+           {
+               url: '/api/channel/addCh',
+               type: 'POST',
+               contentType: 'application/json',
+               data: JSON.stringify(mydata),
+               success: function(result) {
+                   tv=result;
+                   var str="#label-"+id;
+                   $(str).html("Your channel added");
+               }
+           }
+           );
+    }
+   );
+    $("div.app-div").on("click","button.deletech", function(e)
+    {
+        var id=$(this).attr("id");
+        e.preventDefault();
+        var tv=model[id];
+        var mydata=[];
+        mydata[0]=tv;
+        mydata[1]=id;
+        $.ajax(
+           {
+               url: '/api/channel/deleteCh',
+               type: 'DELETE',
+               contentType: 'application/json',
+               data: JSON.stringify(mydata),
+               success: function(result) {
+                   tv=result[0];
+                   alert("Current channel delete");
+                   var str="#label-"+id;
+                   $(str).html(result[1]);
+               }
+           }
+           );
+    }
+     );
+   
+     $("div.app-div").on("click","button.myshow", function(e)
+    {
+        var id=$(this).attr("id");
+        e.preventDefault();
+       
+        $.ajax(
+             {
+                 url: '/api/channel/show/'+key,
+                 type: 'GET',
+                 contentType: 'application/json',
+               
+                 success: function(result) {
+                   
+                     document.getElementById("showdiv-"+id).innerHTML=result;
+                   
+                 }
+             }
+             );
+       
+    }
+     );
+     $("div.app-div").on("click","button.deletediv", function(e)
+     {
+         var key=$(this).attr("id");
+         e.preventDefault();
+                 
+         $.ajax(
+              {
+                  url: '/api/channel/deleteApp',
+                  type: 'DELETE',
+                  contentType: 'application/json',
+                  data: JSON.stringify(key),
+                  success: function(result) {
+                      alert(result);
+                      document.getElementById("div "+key).remove(); 
+                      
+                  }
+              }
+              );
+     }
+     );
+  
+</script>
