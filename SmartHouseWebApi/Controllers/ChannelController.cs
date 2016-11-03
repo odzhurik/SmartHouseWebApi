@@ -48,211 +48,147 @@ namespace SmartHouseWebApi.Controllers
                  list.Add(index);
              }
          }
-         //else
-         //{
-         //    TV tv = new TV();
-         //   list.Add(tv.ToString());
-         //   list.Add(3);
-
-         //}
+        
          return list;
         }
-         private void Init(TV tv, int id)
+      
+        [Route("api/channel/next")]
+        public string PutNext([FromBody]int id)
         {
            
-            applienceDictionary.Add(id, tv);
-               
-        }
-        [Route("api/channel/next")]
-        public string[] PutNext([FromBody]List<Object> li)
-        {
-            TV tv = JsonConvert.DeserializeObject<TV>(li[0].ToString());
-            int id = JsonConvert.DeserializeObject<int>(li[1].ToString());
             TV tv2;
-            string[] array = new string[2];
+            string result = "";
             id++;
-            if (applienceDictionary.ContainsKey(id) == false)
-            {
-                Init(tv, id);
-                tv.NextChannel();
-
-                array[0] = tv.currentChannel;
-                array[1] = tv.ToString();
-            }
-            else
+            if (applienceDictionary.ContainsKey(id))
+           
             {
                 tv2 = applienceDictionary[id] as TV;
                 tv2.NextChannel();
 
-                array[0] = tv2.currentChannel;
-                array[1] = tv2.ToString();
+                
+                result = tv2.ToString();
             }
 
 
-            return array;
+            return result;
 
         }
         [Route("api/channel/OnOff")]
-        public string[] PutOnOff([FromBody] List<Object> li)
+        public string PutOnOff([FromBody] int id)
         {
-            TV tv = JsonConvert.DeserializeObject<TV>(li[0].ToString());
-            int id = JsonConvert.DeserializeObject<int>(li[1].ToString());
+          
             TV tv2;
-            string[] array = new string[2];
+            string result = "";
             id++;
             
-            if (applienceDictionary.ContainsKey(id) == false)
-            {
-                Init(tv, id);
-                tv.OnOff();
-
-                array[0] = tv.State.ToString();
-                array[1] = tv.ToString();
-            }
-            else
+            if (applienceDictionary.ContainsKey(id))
+           
             {
                 tv2 = applienceDictionary[id] as TV;
                 tv2.OnOff();
 
-                array[0] = tv2.State.ToString();
-                array[1] = tv2.ToString();
+                result = tv2.ToString();
             }
 
 
-            return array;
+            return result;
         }
         [Route("api/channel/prev")]
-        public string[] PutPrev([FromBody]List<Object> li)
+        public string PutPrev([FromBody]int id)
         {
-            TV tv = JsonConvert.DeserializeObject<TV>(li[0].ToString());
-            int id = JsonConvert.DeserializeObject<int>(li[1].ToString());
+           
             TV tv2;
-            string[] array = new string[2];
+            string result = "";
             id++;
-            if (applienceDictionary.ContainsKey(id) == false)
-            {
-                Init(tv, id);
-                tv.PrevChannel();
-
-                array[0] = tv.currentChannel;
-                array[1] = tv.ToString();
-            }
-            else
+            if (applienceDictionary.ContainsKey(id))
+          
             {
                 tv2 = applienceDictionary[id] as TV;
                 tv2.PrevChannel();
 
-                array[0] = tv2.currentChannel;
-                array[1] = tv2.ToString();
+               
+                result = tv2.ToString();
             }
-            return array;
+            return result;
         }
         [Route("api/channel/down")]
-        public string[] PutDown([FromBody] List<Object> li)
+        public string PutDown([FromBody] int id)
         {
-            TV tv = JsonConvert.DeserializeObject<TV>(li[0].ToString());
-            int id = JsonConvert.DeserializeObject<int>(li[1].ToString());
+           
             TV tv2;
-            string[] array = new string[2];
+            string result = "";
             id++;
-            if (applienceDictionary.ContainsKey(id) == false)
-            {
-                Init(tv, id);
-                tv.Down();
-
-                array[0] = tv.Unit.ToString();
-                array[1] = tv.ToString();
-            }
-            else
+            if (applienceDictionary.ContainsKey(id))
+           
             {
                 tv2 = applienceDictionary[id] as TV;
                 tv2.Down();
 
-                array[0] = tv2.Unit.ToString();
-                array[1] = tv2.ToString();
+                
+                result = tv2.ToString();
             }
-            return array;
+            return result;
         }
         [Route("api/channel/up")]
-        public string[] PutUp([FromBody] List<Object> li)
+        public string PutUp([FromBody] int id)
         {
-            TV tv = JsonConvert.DeserializeObject<TV>(li[0].ToString());
-            int id = JsonConvert.DeserializeObject<int>(li[1].ToString());
+            
             TV tv2;
-            string[] array = new string[2];
+            string result = "";
             id++;
-            if (applienceDictionary.ContainsKey(id) == false)
-            {
-                Init(tv, id);
-                tv.Up();
-
-                array[0] = tv.Unit.ToString();
-                array[1] = tv.ToString();
-            }
-            else
+            if (applienceDictionary.ContainsKey(id))
+           
             {
                 tv2 = applienceDictionary[id] as TV;
                 tv2.Up();
 
-                array[0] = tv2.Unit.ToString();
-                array[1] = tv2.ToString();
+                
+                result = tv2.ToString();
             }
-            return array;
+            return result;
+
         }
         [Route("api/channel/addCh")]
-        public TV PostChannel([FromBody] List<Object> li)
+        public string PostChannel([FromBody] List<Object> li)
         {
 
-            TV tv = JsonConvert.DeserializeObject<TV>(li[0].ToString());
-            int id = JsonConvert.DeserializeObject<int>(li[1].ToString());
-            string channel = (string)li[2];
-            TV tv2;
+            
+            int id = JsonConvert.DeserializeObject<int>(li[0].ToString());
+            string channel = (string)li[1];
+            string result = "";
+            TV tv2=new TV();
             
             id++;
-            if (applienceDictionary.ContainsKey(id) == false)
-            {
-                Init(tv, id);
-                tv.AddChannel(channel);
-
-                return tv;
-            }
-            else
+            if (applienceDictionary.ContainsKey(id))
+          
             {
                 tv2 = applienceDictionary[id] as TV;
                 tv2.AddChannel(channel);
-
-                return tv2;
+                result = "Your channel added";
+                
             }
 
-            
+            return result;
         }
         [Route("api/channel/deleteCh")]
-        public List<Object> DeleteCh([FromBody] List<Object> li)
+        public string DeleteCh([FromBody] int id)
         {
-            TV tv = JsonConvert.DeserializeObject<TV>(li[0].ToString());
-            int id = JsonConvert.DeserializeObject<int>(li[1].ToString());
+           
             TV tv2;
-            string[] array = new string[2];
+            string result = "";
             id++;
-            List<Object> list = new List<object>();
-            if (applienceDictionary.ContainsKey(id) == false)
-            {
-                Init(tv, id);
-                tv.DeleteCurrentCh();
-
-                list.Add(tv);
-                list.Add(tv.ToString());
-            }
-            else
+           
+            if (applienceDictionary.ContainsKey(id))
+           
             {
                 tv2 = applienceDictionary[id] as TV;
                 tv2.DeleteCurrentCh();
 
-                list.Add(tv2);
-                list.Add(tv2.ToString());
+                
+                result=tv2.ToString();
             }
 
-            return list;
+            return result;
         }
         [Route("api/channel/show/{key}")]
         public string GetCh(int key)

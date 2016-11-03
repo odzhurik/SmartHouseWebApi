@@ -160,22 +160,22 @@
     {
         var id=$(this).attr("id");
         e.preventDefault();
-        var tv=model[id];
-        var mydata=[];
-        mydata[0]=tv;
-        mydata[1]=id;
+        //var tv=model[id];
+        //var mydata=[];
+        //mydata[0]=tv;
+        //mydata[1]=id;
        
         $.ajax(
             {
                 url: '/api/channel/OnOff',
                 type: 'PUT',
                 contentType: 'application/json',
-                data: JSON.stringify(mydata),
+                data: JSON.stringify(id),
                 success: function(result) {
-                    tv["State"]=result[0];
+                   // tv["State"]=result[0];
 
                     var str="#label-"+id;
-                    $(str).html(result[1]);
+                    $(str).html(result);
                 }
             }
             );
@@ -186,21 +186,18 @@
     {
         var id=$(this).attr("id");
         e.preventDefault();
-        var tv=model[id];
-        var mydata=[];
-        mydata[0]=tv;
-        mydata[1]=id;
+      
         $.ajax(
                 {
                     url: '/api/channel/next',
                     type: 'PUT',
                     contentType: 'application/json',
-                    data: JSON.stringify(mydata),
+                    data: JSON.stringify(id),
                     success: function(result) {
-                        tv["currentChannel"]=result[0];
+                       
 
                         var str="#label-"+id;
-                        $(str).html(result[1]);
+                        $(str).html(result);
                     }
                 }
                 );
@@ -213,20 +210,17 @@
     {
         var id=$(this).attr("id");
         e.preventDefault();
-        var tv=model[id];
-        var mydata=[];
-        mydata[0]=tv;
-        mydata[1]=id;
+       
         $.ajax(
              {
                  url: '/api/channel/prev',
                  type: 'PUT',
                  contentType: 'application/json',
-                 data: JSON.stringify(mydata),
+                 data: JSON.stringify(id),
                  success: function(result) {
-                     tv["currentChannel"]=result[0];
+                    
                      var str="#label-"+id;
-                     $(str).html(result[1]);
+                     $(str).html(result);
                  }
              }
              );
@@ -237,20 +231,17 @@
     {
         var id=$(this).attr("id");
         e.preventDefault();
-        var tv=model[id];
-        var mydata=[];
-        mydata[0]=tv;
-        mydata[1]=id;
+      
         $.ajax(
             {
                 url: '/api/channel/down',
                 type: 'PUT',
                 contentType: 'application/json',
-                data: JSON.stringify(mydata),
+                data: JSON.stringify(id),
                 success: function(result) {
-                    tv["Unit"]=result[0];
+                  
                     var str="#label-"+id;
-                    $(str).html(result[1]);
+                    $(str).html(result);
                 }
             }
             );
@@ -261,20 +252,17 @@
     {
         var id=$(this).attr("id");
         e.preventDefault();
-        var tv=model[id];
-        var mydata=[];
-        mydata[0]=tv;
-        mydata[1]=id;
+       
         $.ajax(
             {
                 url: '/api/channel/up',
                 type: 'PUT',
                 contentType: 'application/json',
-                data: JSON.stringify(mydata),
+                data: JSON.stringify(id),
                 success: function(result) {
-                    tv["Unit"]=result[0];
+                  
                     var str="#label-"+id;
-                    $(str).html(result[1]);
+                    $(str).html(result);
                 }
             }
             );
@@ -285,11 +273,11 @@
         var id=$(this).attr("id");
         e.preventDefault();
         var channel=$("#textBoxAdd-"+id).val();
-        var tv=model[id];
+       
         var mydata=[];
-        mydata[0]=tv;
-        mydata[1]=id;
-        mydata[2]=channel;
+       
+        mydata[0]=id;
+        mydata[1]=channel;
         $.ajax(
            {
                url: '/api/channel/addCh',
@@ -297,9 +285,9 @@
                contentType: 'application/json',
                data: JSON.stringify(mydata),
                success: function(result) {
-                   tv=result;
+                   
                    var str="#label-"+id;
-                   $(str).html("Your channel added");
+                   $(str).html(result);
                }
            }
            );
@@ -309,21 +297,18 @@
     {
         var id=$(this).attr("id");
         e.preventDefault();
-        var tv=model[id];
-        var mydata=[];
-        mydata[0]=tv;
-        mydata[1]=id;
+       
         $.ajax(
            {
                url: '/api/channel/deleteCh',
                type: 'DELETE',
                contentType: 'application/json',
-               data: JSON.stringify(mydata),
+               data: JSON.stringify(id),
                success: function(result) {
-                   tv=result[0];
+                  
                    alert("Current channel delete");
                    var str="#label-"+id;
-                   $(str).html(result[1]);
+                   $(str).html(result);
                }
            }
            );
@@ -332,7 +317,7 @@
    
      $("div.app-div").on("click","button.myshow", function(e)
     {
-        var id=$(this).attr("id");
+        var key=$(this).attr("id");
         e.preventDefault();
        
         $.ajax(
@@ -343,7 +328,7 @@
                
                  success: function(result) {
                    
-                     document.getElementById("showdiv-"+id).innerHTML=result;
+                     document.getElementById("showdiv-"+key).innerHTML=result;
                    
                  }
              }
