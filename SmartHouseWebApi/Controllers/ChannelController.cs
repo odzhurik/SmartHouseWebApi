@@ -24,6 +24,17 @@ namespace SmartHouseWebApi.Controllers
          [Route("api/channel/init")]
         public List<Object> InitFromView()
         {
+            IDictionary<int, Applience> applienceD = new SortedDictionary<int, Applience>();
+            applienceD = (SortedDictionary<int, Applience>)HttpContext.Current.Session["Apps"];
+             foreach(var pair in applienceD)
+             {
+                 var key = pair.Key;
+                 var value = pair.Value;
+                 if(value is IChannel)
+                 {
+                     applienceDictionary[key] = value;
+                 }
+             }
             List<Object> list = new List<object>();
           
          if(applienceDictionary.Count!=0)
@@ -37,13 +48,13 @@ namespace SmartHouseWebApi.Controllers
                  list.Add(index);
              }
          }
-         else
-         {
-             TV tv = new TV();
-            list.Add(tv.ToString());
-            list.Add(3);
+         //else
+         //{
+         //    TV tv = new TV();
+         //   list.Add(tv.ToString());
+         //   list.Add(3);
 
-         }
+         //}
          return list;
         }
          private void Init(TV tv, int id)
