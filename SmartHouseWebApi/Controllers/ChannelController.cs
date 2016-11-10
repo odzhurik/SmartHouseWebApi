@@ -149,13 +149,14 @@ namespace SmartHouseWebApi.Controllers
 
         }
         [Route("api/channel/addCh")]
-        public string PostChannel([FromBody] List<Object> li)
+        public string[] PostChannel([FromBody] List<Object> li)
         {
 
             
             int id = JsonConvert.DeserializeObject<int>(li[0].ToString());
             string channel = (string)li[1];
-            string result = "";
+            string [] result = new string[2];
+            List<string> list = new List<string>();
             TV tv2=new TV();
             
             id++;
@@ -164,18 +165,30 @@ namespace SmartHouseWebApi.Controllers
             {
                 tv2 = applienceDictionary[id] as TV;
                 tv2.AddChannel(channel);
-                result = "Your channel added";
+                result[0] = "Your channel added";
+                list = (List<string>)tv2.ShowChannels();
+                string channels = @"<ul>";
+
+                foreach (string ch in list)
+                {
+
+                    channels += "<li>" + ch + @"</li>";
+                }
+
+                channels += "</ul>";
+                result[1] = channels;
                 
             }
 
             return result;
         }
         [Route("api/channel/deleteCh")]
-        public string DeleteCh([FromBody] int id)
+        public string[] DeleteCh([FromBody] int id)
         {
            
             TV tv2;
-            string result = "";
+            List<string> list = new List<string>();
+            string[] result = new string[3];
             id++;
            
             if (applienceDictionary.ContainsKey(id))
@@ -183,9 +196,26 @@ namespace SmartHouseWebApi.Controllers
             {
                 tv2 = applienceDictionary[id] as TV;
                 tv2.DeleteCurrentCh();
+                result[0] = tv2.ToString();
+                if(tv2.currentChannel=="none")
+                {
+                     result[1] = "no channels to delete";
+                }
+                else
+                {
+                    result[1] = "Current channel deleted";
+                }
+                list = (List<string>)tv2.ShowChannels();
+                string channels = @"<ul>";
 
+                foreach (string channel in list)
+                {
+
+                    channels += "<li>" + channel + @"</li>";
+                }
                 
-                result=tv2.ToString();
+                channels += "</ul>";
+                result[2] = channels;
             }
 
             return result;
@@ -199,16 +229,16 @@ namespace SmartHouseWebApi.Controllers
             {
                 TV tv = applienceDictionary[key] as TV;
                 list = (List<string>)tv.ShowChannels();
-                string result = @"<select multiple>";
+                string result = @"<ul>";
 
                 foreach (string channel in list)
                 {
-                    result+="<option>";
-                    result += channel + @"</option>";
+                   
+                    result += "<li>"+channel + @"</li>";
                 }
 
 
-                result += "</select>";
+                result += "</ul>";
                 return result;
             }
             else

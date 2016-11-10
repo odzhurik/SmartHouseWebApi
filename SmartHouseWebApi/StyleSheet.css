@@ -30,5 +30,9 @@ body {
             margin: 3px;
             padding: 3px;
             text-align:center;
-            height:650px;
+            height:800px;
         }
+ul{
+    margin-left:30%;
+    margin-right:80%;
+}

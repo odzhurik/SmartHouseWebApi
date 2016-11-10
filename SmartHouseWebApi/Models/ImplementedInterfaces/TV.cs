@@ -82,6 +82,10 @@ namespace SmartHouseMVC.Models.ImplementedInterfaces
             if (State)
             {
                 int index = channels.IndexOf(currentChannel);
+                if(currentChannel=="none")
+                {
+                    return;
+                }
                 if (index == (channels.Count - 1))
                     currentChannel = channels[0];
                 else
@@ -93,6 +97,10 @@ namespace SmartHouseMVC.Models.ImplementedInterfaces
             if (State)
             {
                 int index = channels.IndexOf(currentChannel);
+                if(currentChannel=="none")
+                {
+                    return;
+                }
                 if (index == 0)
                     currentChannel = channels[channels.Count - 1];
                 else
@@ -106,7 +114,10 @@ namespace SmartHouseMVC.Models.ImplementedInterfaces
                 bool flag = false;
                 int pos = channels.IndexOf(currentChannel);
 
-
+                if(currentChannel=="none")
+                {
+                    return;
+                }
                 if ((pos + 1) == channels.Count)
                 {
                     currentChannel = channels[0];

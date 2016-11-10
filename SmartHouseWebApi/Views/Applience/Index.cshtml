@@ -103,12 +103,17 @@
             key = @item.Key-1;
            
             <button type="submit" name="action" value="show" class="btn btn-primary myshow" id="@key">Show</button>
+            <br />
            <div id="showdiv-@key"></div>
             <br />
-            <input type="text" name="channelTV" id="textBoxAdd-@key" />
+           <input type="text" name="channelTV" id="textBoxAdd-@key" />
+           
+            
             <button type="submit" name="action" value="AddChannel" class="btn btn-primary addchannel" id="@key">Add Channel</button>
             <br />
+            <br />
             <button type="submit" name="action" value="DeleteChannel" class="btn btn-warning deletech" id="@key">Delete current channel</button>
+            <br />
             <br />
     <button type="submit" name="action" value="Prev" class="btn btn-info myprev" id="@key"><-</button>
             <button type="submit" name="action" value="Next" class="btn btn-primary next" id="@key">-></button>
@@ -160,11 +165,7 @@
     {
         var id=$(this).attr("id");
         e.preventDefault();
-        //var tv=model[id];
-        //var mydata=[];
-        //mydata[0]=tv;
-        //mydata[1]=id;
-       
+             
         $.ajax(
             {
                 url: '/api/channel/OnOff',
@@ -172,8 +173,6 @@
                 contentType: 'application/json',
                 data: JSON.stringify(id),
                 success: function(result) {
-                   // tv["State"]=result[0];
-
                     var str="#label-"+id;
                     $(str).html(result);
                 }
@@ -194,9 +193,7 @@
                     contentType: 'application/json',
                     data: JSON.stringify(id),
                     success: function(result) {
-                       
-
-                        var str="#label-"+id;
+                       var str="#label-"+id;
                         $(str).html(result);
                     }
                 }
@@ -287,7 +284,10 @@
                success: function(result) {
                    
                    var str="#label-"+id;
-                   $(str).html(result);
+                   alert(result[0]);
+                   var timer=setTimeout(function(){  document.getElementById("showdiv-"+id).innerHTML=result[1];},1000);
+                   $("#textBoxAdd-"+id).val('');
+                   setTimeout(function(){ clearTimeout(timer); document.getElementById("showdiv-"+id).innerHTML="";},5000);
                }
            }
            );
@@ -305,10 +305,11 @@
                contentType: 'application/json',
                data: JSON.stringify(id),
                success: function(result) {
-                  
-                   alert("Current channel delete");
                    var str="#label-"+id;
-                   $(str).html(result);
+                   $(str).html(result[0]);
+                   alert(result[1]);
+                   var timer=setTimeout(function(){  document.getElementById("showdiv-"+id).innerHTML=result[2];},1000);
+                   setTimeout(function(){ clearTimeout(timer); document.getElementById("showdiv-"+id).innerHTML="";},5000);
                }
            }
            );
@@ -328,7 +329,8 @@
                
                  success: function(result) {
                    
-                     document.getElementById("showdiv-"+key).innerHTML=result;
+                     var timer=setTimeout(function(){  document.getElementById("showdiv-"+key).innerHTML=result;},1000);
+                     setTimeout(function(){ clearTimeout(timer); document.getElementById("showdiv-"+key).innerHTML="";},5000);
                    
                  }
              }
