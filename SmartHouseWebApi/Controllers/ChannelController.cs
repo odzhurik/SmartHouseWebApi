@@ -11,8 +11,6 @@ using System.Net.Http;
 using System.Web;
 using System.Web.Http;
 
-
-
 namespace SmartHouseWebApi.Controllers
 {
 
@@ -52,8 +50,8 @@ namespace SmartHouseWebApi.Controllers
          return list;
         }
       
-        [Route("api/channel/next")]
-        public string PutNext([FromBody]int id)
+        [Route("api/channel/next/{id}")]
+        public string PutNext(int id)
         {
            
             TV tv2;
@@ -73,8 +71,8 @@ namespace SmartHouseWebApi.Controllers
             return result;
 
         }
-        [Route("api/channel/OnOff")]
-        public string PutOnOff([FromBody] int id)
+        [Route("api/channel/OnOff/{id}")]
+        public string PutOnOff(int id)
         {
           
             TV tv2;
@@ -93,8 +91,8 @@ namespace SmartHouseWebApi.Controllers
 
             return result;
         }
-        [Route("api/channel/prev")]
-        public string PutPrev([FromBody]int id)
+        [Route("api/channel/prev/{id}")]
+        public string PutPrev(int id)
         {
            
             TV tv2;
@@ -111,8 +109,8 @@ namespace SmartHouseWebApi.Controllers
             }
             return result;
         }
-        [Route("api/channel/down")]
-        public string PutDown([FromBody] int id)
+        [Route("api/channel/down/{id}")]
+        public string PutDown(int id)
         {
            
             TV tv2;
@@ -129,8 +127,8 @@ namespace SmartHouseWebApi.Controllers
             }
             return result;
         }
-        [Route("api/channel/up")]
-        public string PutUp([FromBody] int id)
+        [Route("api/channel/up/{id}")]
+        public string PutUp(int id)
         {
             
             TV tv2;
@@ -182,8 +180,8 @@ namespace SmartHouseWebApi.Controllers
 
             return result;
         }
-        [Route("api/channel/deleteCh")]
-        public string[] DeleteCh([FromBody] int id)
+        [Route("api/channel/deleteCh/{id}")]
+        public string[] DeleteCh(int id)
         {
            
             TV tv2;
@@ -247,8 +245,8 @@ namespace SmartHouseWebApi.Controllers
             }
 
         }
-        [Route("api/channel/deleteApp")]
-        public string DeleteApp([FromBody]int key)
+        [Route("api/channel/deleteApp/{key}")]
+        public string DeleteApp(int key)
         {
            
             key++;
